@@ -24,6 +24,21 @@ public class ShizukuUserServiceManager extends UserServiceManager {
     }
 
     @Override
+    /**
+     * Generates the command to start the user service.
+     *
+     * @param record            The user service record
+     * @param key               The key
+     * @param token             The token
+     * @param packageName       The package name
+     * @param classname         The class name
+     * @param processNameSuffix The process name suffix
+     * @param callingUid        The calling UID
+     * @param use32Bits         Whether to use 32 bits
+     * @param debug             Whether to enable debug mode
+     * @return The command to start the user service
+     * @throws SecurityException if a security manager exists and its checkRead method denies read access to the file
+     */
     public String getUserServiceStartCmd(
             UserServiceRecord record, String key, String token, String packageName,
             String classname, String processNameSuffix, int callingUid, boolean use32Bits, boolean debug) {
@@ -39,12 +54,30 @@ public class ShizukuUserServiceManager extends UserServiceManager {
     }
 
     @Override
+    /**
+     * This method is called when a new UserServiceRecord is created for a specific package.
+     * It performs the following actions:
+     * 1. Retrieves the package name from the provided PackageInfo.
+     * 2. Creates an ApkChangedListener to monitor changes in the package's APK file.
+     * 3. Starts the ApkChangedListener to observe changes in the APK file.
+     * 4. Stores the created ApkChangedListener in a map for future reference.
+     *
+     * @param record       The UserServiceRecord that has been created.
+     * @param packageInfo  The PackageInfo associated with the UserServiceRecord.
+     * @throws NullPointerException if either record or packageInfo is null.
+     */
     public void onUserServiceRecordCreated(UserServiceRecord record, PackageInfo packageInfo) {
         super.onUserServiceRecordCreated(record, packageInfo);
 
         String packageName = packageInfo.packageName;
         ApkChangedListener listener = new ApkChangedListener() {
             @Override
+            /**
+             * This method is called when the APK is changed. It retrieves the new source directory for the package and performs necessary actions based on the changes.
+             *
+             * @throws SecurityException if a security manager exists and its checkPermission method doesn't allow the required permissions
+             * @throws IllegalArgumentException if the package name is invalid or null
+             */
             public void onApkChanged() {
                 String newSourceDir = null;
 
@@ -72,6 +105,16 @@ public class ShizukuUserServiceManager extends UserServiceManager {
     }
 
     @Override
+    /**
+     * This method is called when a UserServiceRecord is removed.
+     * It overrides the onUserServiceRecordRemoved method of the superclass.
+     * It performs the following actions:
+     * 1. Retrieves the ApkChangedListener associated with the given UserServiceRecord from the apkChangedListeners map.
+     * 2. If the listener is not null, it stops the ApkChangedObservers for the listener and removes the record from the apkChangedListeners map.
+     *
+     * @param record The UserServiceRecord that is being removed
+     * @throws NullPointerException if the record is null
+     */
     public void onUserServiceRecordRemoved(UserServiceRecord record) {
         super.onUserServiceRecordRemoved(record);
         ApkChangedListener listener = apkChangedListeners.get(record);

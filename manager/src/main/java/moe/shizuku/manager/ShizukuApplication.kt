@@ -29,6 +29,19 @@ class ShizukuApplication : Application() {
         }
     }
 
+    /**
+     * Initializes the Shizuku settings with the given context.
+     *
+     * @param context the context to initialize Shizuku settings
+     * @throws SecurityException if the caller does not have permission to access Shizuku settings
+     * @throws IllegalStateException if Shizuku is not properly installed or initialized
+     *
+     * Example:
+     * ```
+     * val context: Context = applicationContext
+     * init(context)
+     * ```
+     */
     private fun init(context: Context?) {
         ShizukuSettings.initialize(context)
         LocaleDelegate.defaultLocale = ShizukuSettings.getLocale()
@@ -41,4 +54,18 @@ class ShizukuApplication : Application() {
         init(this)
     }
 
+/**
+ * Called when the application is starting.
+ *
+ * @throws Exception if an error occurs during application initialization
+ *
+ * Example:
+ * ```
+ * override fun onCreate() {
+ *     super.onCreate()
+ *     application = this
+ *     init(this)
+ * }
+ * ```
+ */
 }
