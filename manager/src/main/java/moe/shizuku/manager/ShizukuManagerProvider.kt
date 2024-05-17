@@ -73,4 +73,33 @@ class ShizukuManagerProvider : ShizukuProvider() {
             super.call(method, arg, extras)
         }
     }
+/**
+ * This method is called when the activity is first created.
+ * It disables automatic SUI initialization and calls the super class's onCreate method.
+ *
+ * @return true if the method is executed successfully, false otherwise
+ * @throws Exception if there is an error during the execution
+ *
+ * Example:
+ * ```
+ * val result = onCreate()
+ * ```
+ */
+/**
+ * Calls the specified method with the given arguments and extras.
+ *
+ * @param method The method to be called.
+ * @param arg The argument for the method, can be null.
+ * @param extras The extras to be passed along with the method call.
+ * @return The result of the method call wrapped in a Bundle, or null if the extras are null or if an exception occurs.
+ * @throws SomeException If an error occurs while calling the method.
+ *
+ * Example usage:
+ * ```
+ * val method = "someMethod"
+ * val arg = "someArgument"
+ * val extras = Bundle()
+ * val result = call(method, arg, extras)
+ * ```
+ */
 }

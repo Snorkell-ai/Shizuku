@@ -39,6 +39,14 @@ public class BinderSender {
         private static final List<Integer> PID_LIST = new ArrayList<>();
 
         @Override
+        /**
+         * Notifies when foreground activities have changed for a specific process and user.
+         *
+         * @param pid The process ID
+         * @param uid The user ID
+         * @param foregroundActivities Indicates whether the activities are in the foreground
+         * @throws RemoteException If a remote exception occurs
+         */
         public void onForegroundActivitiesChanged(int pid, int uid, boolean foregroundActivities) throws RemoteException {
             LOGGER.d("onForegroundActivitiesChanged: pid=%d, uid=%d, foregroundActivities=%s", pid, uid, foregroundActivities ? "true" : "false");
 
@@ -53,6 +61,12 @@ public class BinderSender {
         }
 
         @Override
+        /**
+         * This method is called when a process has died.
+         *
+         * @param pid The process ID of the died process
+         * @param uid The user ID of the died process
+         */
         public void onProcessDied(int pid, int uid) {
             LOGGER.d("onProcessDied: pid=%d, uid=%d", pid, uid);
 
@@ -65,6 +79,14 @@ public class BinderSender {
         }
 
         @Override
+        /**
+         * Called when the process state changes for a given process.
+         *
+         * @param pid the process ID
+         * @param uid the user ID
+         * @param procState the new process state
+         * @throws RemoteException if a remote exception occurs
+         */
         public void onProcessStateChanged(int pid, int uid, int procState) throws RemoteException {
             LOGGER.d("onProcessStateChanged: pid=%d, uid=%d, procState=%d", pid, uid, procState);
 
@@ -85,6 +107,12 @@ public class BinderSender {
         private static final List<Integer> UID_LIST = new ArrayList<>();
 
         @Override
+        /**
+         * Called when the UID becomes active.
+         *
+         * @param uid the UID that becomes active
+         * @throws RemoteException if a remote exception occurs
+         */
         public void onUidActive(int uid) throws RemoteException {
             LOGGER.d("onUidCachedChanged: uid=%d", uid);
 
@@ -92,6 +120,13 @@ public class BinderSender {
         }
 
         @Override
+        /**
+         * Called when the cached state of a UID has changed.
+         *
+         * @param uid the UID for which the cached state has changed
+         * @param cached true if the UID is now cached, false if it is not cached
+         * @throws RemoteException if a remote exception occurs
+         */
         public void onUidCachedChanged(int uid, boolean cached) throws RemoteException {
             LOGGER.d("onUidCachedChanged: uid=%d, cached=%s", uid, Boolean.toString(cached));
 
@@ -101,6 +136,13 @@ public class BinderSender {
         }
 
         @Override
+        /**
+         * Called when the UID becomes idle.
+         *
+         * @param uid      The UID that becomes idle.
+         * @param disabled A boolean indicating whether the UID is disabled.
+         * @throws RemoteException If a remote exception occurs.
+         */
         public void onUidIdle(int uid, boolean disabled) throws RemoteException {
             LOGGER.d("onUidIdle: uid=%d, disabled=%s", uid, Boolean.toString(disabled));
 
@@ -108,12 +150,25 @@ public class BinderSender {
         }
 
         @Override
+        /**
+         * Notifies when a specific UID is no longer present.
+         *
+         * @param uid the UID that is no longer present
+         * @param disabled indicates whether the UID is disabled
+         * @throws RemoteException if a remote exception occurs
+         */
         public void onUidGone(int uid, boolean disabled) throws RemoteException {
             LOGGER.d("onUidGone: uid=%d, disabled=%s", uid, Boolean.toString(disabled));
 
             uidGone(uid);
         }
 
+        /**
+         * Starts the specified UID.
+         *
+         * @param uid the UID to start
+         * @throws RemoteException if a remote exception occurs
+         */
         private void uidStarts(int uid) throws RemoteException {
             synchronized (UID_LIST) {
                 if (UID_LIST.contains(uid)) {
@@ -127,6 +182,12 @@ public class BinderSender {
             sendBinder(uid, -1);
         }
 
+        /**
+         * Removes the specified UID from the UID_LIST if it exists.
+         *
+         * @param uid the UID to be removed
+         * @throws IndexOutOfBoundsException if the specified UID is not found in the UID_LIST
+         */
         private void uidGone(int uid) {
             synchronized (UID_LIST) {
                 int index = UID_LIST.indexOf(uid);
@@ -138,6 +199,13 @@ public class BinderSender {
         }
     }
 
+    /**
+     * Sends a binder to the specified UID and PID.
+     *
+     * @param uid The UID to send the binder to
+     * @param pid The PID of the process to send the binder to
+     * @throws RemoteException If a remote exception occurs while sending the binder
+     */
     private static void sendBinder(int uid, int pid) throws RemoteException {
         List<String> packages = PackageManagerApis.getPackagesForUidNoThrow(uid);
         if (packages.isEmpty())
@@ -169,6 +237,11 @@ public class BinderSender {
         }
     }
 
+    /**
+     * Registers the ShizukuService and sets up process and UID observers.
+     *
+     * @param shizukuService the ShizukuService to register
+     */
     public static void register(ShizukuService shizukuService) {
         sShizukuService = shizukuService;
 

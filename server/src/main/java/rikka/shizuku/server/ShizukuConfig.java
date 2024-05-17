@@ -35,11 +35,23 @@ public class ShizukuConfig {
         }
 
         @Override
+        /**
+         * Checks if the flag for allowed is set.
+         *
+         * @return true if the flag for allowed is set, false otherwise
+         * @throws SomeException if there is an issue with the configuration manager
+         */
         public boolean isAllowed() {
             return (flags & ConfigManager.FLAG_ALLOWED) != 0;
         }
 
         @Override
+        /**
+         * Checks if the denied flag is set.
+         *
+         * @return true if the denied flag is set, false otherwise
+         * @throws SomeException if there is an issue with accessing the flags or determining the denied status
+         */
         public boolean isDenied() {
             return (flags & ConfigManager.FLAG_DENIED) != 0;
         }
